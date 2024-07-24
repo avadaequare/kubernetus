@@ -1,0 +1,26 @@
+imperative --> 
+In Kubernetes, "imperative" refers to a style of managing resources where you use direct commands to create, update, or delete resources. This approach involves issuing 
+specific commands that directly describe the actions to be taken, rather than defining the desired state of the system in a declarative configuration file.(Used mostly for testing purposes)
+
+kubectl run redis --image=redis:alpine --dry-run=client -oyaml > redis-pod.yaml -->The command you've provided is using kubectl to create a Kubernetes pod configuration for 
+a Redis instance. Let's break down each part:                        |
+                                                                     |
+kubectl run redis: This command creates a new pod with the name redis. The run command is used to quickly create a pod or deployment.
+
+--image=redis:alpine: This specifies the container image to use for the pod. In this case, it's the Redis image with the alpine tag, which is a lightweight version of the Redis image based on the Alpine Linux distribution.
+
+--dry-run=client: This option tells kubectl to only simulate the creation of the pod and not actually create it. The client value specifies that the validation should happen on the client-side, not on the server.
+
+-oyaml: This option specifies the output format, which in this case is YAML. The generated configuration will be printed in YAML format.
+
+redis-pod.yaml: This part redirects the output to a file named redis-pod.yaml
+
+kubectl expose pod redis --port=6379 --name redis-service  --> to Create a service redis-service to expose the redis application within the cluster on port 6379.
+
+In Kubernetes, the -f (or --filename) flag is used with the kubectl create command to specify the path to a YAML or JSON file that contains the configuration for Kubernetes resources.
+
+The kubectl run command in Kubernetes is used to quickly create a single pod based on a specified container image. It's commonly used for simple, ad-hoc tasks or for testing purposes, rather than for creating complex applications or deployments.
+
+kubectl create namespace dev- ns --> command to create namespace
+kubectl get pods -n dev-ns --> to list pods in a particular namespace
+kubectl run httpd --image=httpd:alpine --port=80 --expose=true -->  The kubectl run command creates a pod named httpd using the httpd:alpine image. The pod listens on port 80. The --expose flag automatically creates a Kubernetes Service named httpd. This service will map to the pod, providing a stable endpoint for accessing the pod. The service is of type ClusterIP by default, meaning it is accessible only within the cluster.
