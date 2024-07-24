@@ -1,0 +1,16 @@
+scheduling
+Manual scheduling
+if you want to manually scedule a pod in a paerticular node you can do it by specifying nodeName: node (nodename) in pod .yaml file
+example:
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  nodeName: node01
+  containers:
+  -  image: nginx
+     name: nginx
+	 
+make sure u delete pod if there is any existing pod before running it again after node name is added.
