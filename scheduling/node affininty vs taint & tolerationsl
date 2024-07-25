@@ -1,0 +1,24 @@
+Taints and tolerations vs nodeAffinity : when we use taints on node the node does not allow any pods to enter that node until we 
+do tolerations to pods but there is also a possibility that the od with toleration might enter another node which doesnt have 
+taint.
+Nodeaffinity solve the above problem by making sure that by using labels by mentioning the labels of nodes to pods the pods 
+with same label will go to that node but other pods without any labels can also be placed here .
+
+so we can make use of both nodeaffinity and taints & tolerations using taints we dont allow any pod to get to node first then we 
+give node affinity rules so that only pods with similar labels enter the node
+
+Comparison
+
+Node Affinity:
+
+More about positive placement—defining where Pods should be scheduled.
+Expresses both hard and soft preferences for Nodes.
+
+Taints and Tolerations:
+
+More about negative placement—defining where Pods should not be scheduled unless they tolerate the taint.
+Primarily used to prevent Pods from being scheduled on Nodes, with the ability to allow exceptions via tolerations.
+
+In summary, Node Affinity is used to attract Pods to certain Nodes based on Node characteristics, while Taints and Tolerations are
+used to keep Pods away from certain Nodes unless they explicitly tolerate the conditions set by the taints. Both mechanisms can be
+used together to finely control Pod placement and Node usage in a Kubernetes cluster.
