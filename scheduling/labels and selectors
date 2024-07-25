@@ -1,0 +1,7 @@
+labels and selectors
+labels --> Labels are key-value pairs attached to Kubernetes objects, such as pods, nodes, or services. They are used to organize and categorize these resources in a flexible way. Labels do not imply any semantics to the system and are intended for user-defined identification purposes.
+
+selectors --> Selectors are mechanisms used to filter Kubernetes objects based on labels. They are often used by controllers (like Deployments, ReplicaSets) and services to specify a group of resources that they should manage or expose.
+
+kubectl get pods --selector env=dev --> to get pods using selectors 
+kubectl get pods --selector bu=finance --no-headers | wc -l --> it gives count of pods 
