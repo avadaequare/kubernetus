@@ -1,0 +1,61 @@
+taint and toleration:
+
+In Kubernetes, "taints" and "tolerations" are mechanisms used to control how Pods are scheduled onto Nodes. They help prevent certain Pods from being scheduled onto inappropriate Nodes or ensure that Pods are only scheduled on specific Nodes.
+
+Taints
+A taint is a property applied to a Kubernetes Node, indicating that the Node should not accept any Pods unless they explicitly tolerate the taint. Taints are used to reserve Nodes for specific workloads or to prevent Pods from being scheduled on Nodes that have certain conditions.
+
+A taint consists of three parts:
+
+Key: A string identifier for the taint.
+Value: A string value associated with the taint.
+Effect: Determines what happens to Pods that don't tolerate the taint. There are three possible effects:
+NoSchedule: Pods that do not tolerate the taint will not be scheduled on the Node.
+PreferNoSchedule: Kubernetes will try to avoid scheduling Pods that do not tolerate the taint on the Node, but it may still happen if necessary.
+NoExecute: Pods that do not tolerate the taint will be evicted from the Node if they are already running, and new Pods will not be scheduled.
+Example of applying a taint to a Node:
+
+bash
+Copy code
+kubectl taint nodes <node-name> key=value:effect
+to untain or remove tain --> kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+
+In Kubernetes, taints can have three different effects, which determine the behavior of the scheduling system when a Pod does not tolerate a taint on a Node. The three taint effects are:
+
+NoSchedule:
+
+Pods that do not have a toleration for the taint with this effect will not be scheduled on the Node.
+This is used to strictly prevent Pods from being placed on Nodes with specific taints.
+
+PreferNoSchedule:
+Kubernetes will try to avoid scheduling Pods that do not tolerate the taint with this effect on the Node, but it may still schedule them there if necessary (e.g., if there are no other Nodes available).
+This is less strict than NoSchedule and is used to express a preference rather than an absolute rule.
+
+NoExecute:
+Pods that do not tolerate the taint with this effect will be evicted from the Node if they are already running, and new Pods will not be scheduled on the Node.
+This effect is useful for situations where a Node needs to be drained of specific Pods, such as during maintenance or decommissioning
+
+Tolerations
+Tolerations are applied to Pods and allow them to "tolerate" specific taints on Nodes. When a Pod has a toleration for a taint, it can be scheduled on the Node despite the taint.
+
+A toleration has the following parts:
+
+Key: Matches the key of the taint.
+Value: Matches the value of the taint.
+Operator: Specifies the relationship between the key and value. It can be Equal or Exists.
+Effect: Matches the effect of the taint.
+TolerationSeconds (optional): Specifies the duration the Pod will tolerate the taint.
+Example of a toleration in a Pod specification:
+
+yaml
+Copy code
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "value"
+    effect: "NoSchedule"
