@@ -1,0 +1,33 @@
+Daemonsets:
+A DaemonSet in Kubernetes is a type of controller that ensures a copy of a specific pod is running on all or selected nodes 
+in a cluster. DaemonSets are typically used for deploying system-level components that need to run on every node, such as:
+
+Logging and Monitoring Agents: Tools like Fluentd, Prometheus Node Exporter, or Datadog agents, which collect logs or metrics 
+from each node.
+Networking and Security Components: Network plugins like Calico or Cilium, or security tools like Falco, that need to run on 
+every node for consistent functionality.
+When a new node is added to the cluster, the DaemonSet controller automatically schedules the required pods on the new node. 
+If a node is removed, the pods managed by the DaemonSet on that node are also removed. This helps ensure that the desired state
+of the system components is maintained across the entire cluster.
+
+example:
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: elasticsearch
+  name: elasticsearch
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - image: registry.k8s.io/fluentd-elasticsearch:1.20
+        name: fluentd-elasticsearch
