@@ -1,0 +1,61 @@
+staticpod:
+
+In Kubernetes, a static pod is a pod that is managed directly by the kubelet on a specific node, rather than by the Kubernetes API server and control plane. Static pods are defined by configuration files that are placed on the nodes themselves, rather than being created and managed through the Kubernetes API.
+
+Here are some key characteristics of static pods:
+
+Direct Management by Kubelet: Static pods are not part of the Kubernetes API, so they are not managed through kubectl or other Kubernetes tools. Instead, the kubelet directly manages these pods based on configuration files found in a specific directory on the node.
+
+Configuration Files: Static pods are specified using standard pod definition YAML files, which are placed in a directory specified by the kubelet's --pod-manifest-path flag. The kubelet monitors this directory and creates or updates pods as needed based on the files it finds.
+
+Node-Specific: Static pods are tied to a specific node. If the node goes down, the static pods do not get rescheduled on other nodes. However, if the kubelet restarts, it will recreate the static pods.
+
+No Replication: Unlike regular pods managed by a Deployment, ReplicaSet, or DaemonSet, static pods do not have built-in mechanisms for replication or scaling. Each static pod must be defined individually on each node where it is needed.
+
+Use Cases: Static pods are often used for critical components of the Kubernetes control plane, such as the API server, scheduler, and controller manager, particularly in self-hosted Kubernetes clusters. They can also be useful for other critical services that must run on specific nodes and do not need to be managed through the regular Kubernetes control plane.
+
+Static pods are a powerful feature for certain scenarios but are generally used with caution due to their manual nature and the potential for configuration drift if not carefully managed.
+
+command to check pods in all namespaces --> kubectl get pods --all-namespaces
+the pods with namespace as controlplane is considered as staticpod
+
+path of the directory holding the static pod definition files can be found by using below method
+                                   |
+								                   |
+                      First idenity the kubelet config file:
+
+root@controlplane:~# ps -aux | grep /usr/bin/kubelet
+root      3668  0.0  1.5 1933476 63076 ?       Ssl  Mar13  16:18 /usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --network-plugin=cni --pod-infra-container-image=k8s.gcr.io/pause:3.2
+root      4879  0.0  0.0  11468  1040 pts/0    S+   00:06   0:00 grep --color=auto /usr/bin/kubelet
+root@controlplane:~# 
+From the output we can see that the kubelet config file used is /var/lib/kubelet/config.yaml
+
+
+Next, lookup the value assigned for staticPodPath:
+
+root@controlplane:~# grep -i staticpod /var/lib/kubelet/config.yaml
+staticPodPath: /etc/kubernetes/manifests
+root@controlplane:~# 
+As you can see, the path configured is the /etc/kubernetes/manifests directory.
+
+kubectl run --restart=Never --image=busybox static-busybox --dry-run=client -o yaml --command -- sleep 1000 > /etc/kubernetes/manifests/static-busybox.yaml --> to craete a static-busybox.yaml file in static pod path with image busybox and command sleep 1000 
+this should be in staticpod path 
+example :
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: static-busybox
+  name: static-busybox
+spec:
+  containers:
+  - command:
+    - sleep
+    - "1000"
+    image: busybox
+    name: static-busybox
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
