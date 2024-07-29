@@ -1,0 +1,4 @@
+kubectl get pod webapp-color -o yaml > webappcolor-definition.yaml --> if you want to create a definition file from existing pod.
+kubectl get configmaps --> to get config maps in default namespace 
+kubectl create configmap webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+configmap/webapp-config-map created --> to Create a new ConfigMap for the webapp-color POD
