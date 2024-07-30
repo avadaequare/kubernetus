@@ -1,0 +1,54 @@
+configmaps
+A ConfigMap in Kubernetes is an API object used to store non-confidential configuration data in key-value pairs. 
+It allows you to separate configuration details from the application code, making it easier to manage and update configurations
+without needing to rebuild or restart your application.
+
+Here are some key points about ConfigMaps:
+
+Decoupling Configuration from Code: By using ConfigMaps, you can decouple configuration details from the container image, enabling more flexibility in configuration management.
+
+Key-Value Pairs: ConfigMaps can store data in key-value pairs, where both keys and values are strings. This data can be used by your applications as environment variables, command-line arguments, or configuration files.
+
+Data Storage: ConfigMaps can store simple values (like strings) or complex configurations (like JSON, YAML, or other formats).
+
+Mounting ConfigMaps: You can mount ConfigMaps as volumes in your pods or use them as environment variables. This makes it easy to inject configuration data into your containers at runtime.
+
+Updating ConfigMaps: ConfigMaps can be updated independently of the application using them. This is useful for making configuration changes without redeploying the entire application.
+
+Integration with Secrets: While ConfigMaps are suitable for non-sensitive data, Kubernetes Secrets are used for storing sensitive information like passwords, tokens, or keys.
+
+Example of a ConfigMap
+Here’s a simple example of a ConfigMap YAML file:
+
+yaml
+Copy code
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+  config-key: config-value
+  another-key: another-value
+You can then reference this ConfigMap in your Kubernetes deployment or pod specification to provide the necessary configuration data to your application.
+
+Overall, ConfigMaps are a powerful tool in Kubernetes for managing application configuration and promoting a more dynamic and flexible deployment process.
+
+pod definitionn file in which you have to mention config mapm configuration file
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: webapp-color
+  name: webapp-color
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_COLOR
+      valueFrom:
+       configMapKeyRef:
+         name: webapp-config-map
+         key: APP_COLOR
+    image: kodekloud/webapp-color
+    name: webapp-color 
