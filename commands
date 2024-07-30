@@ -2,3 +2,6 @@ kubectl get pod webapp-color -o yaml > webappcolor-definition.yaml --> if you wa
 kubectl get configmaps --> to get config maps in default namespace 
 kubectl create configmap webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
 configmap/webapp-config-map created --> to Create a new ConfigMap for the webapp-color POD
+kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password
+=password123 --> to create secret using command
+echo "cdbfg=" | base64 --decode --> to decode an encoded secret
