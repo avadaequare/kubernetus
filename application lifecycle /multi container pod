@@ -1,0 +1,35 @@
+multicontainer pod:A multi-container Pod in Kubernetes is a Pod that runs two or more containers that are tightly coupled and need to share resources such as storage, network, and lifecycle. These containers are co-located and scheduled together on the same node, sharing the same network namespace and storage volumes. This allows them to communicate with each other using localhost and to share data easily.
+
+Why Use Multi-Container Pods?
+Multi-container Pods are useful in situations where you want to:
+
+Separate Concerns: Different components of an application can be isolated in different containers. For example, one container might handle logging, while another handles the main application logic.
+Shared Data: Containers in a Pod can share data via shared volumes. This is useful for passing data between containers.
+Inter-Process Communication: Containers can communicate with each other directly using localhost because they share the same network namespace.
+Common Multi-Container Pod Patterns
+Sidecar Pattern: A sidecar container runs alongside the main container in the same Pod. It often complements the main container, such as by providing logging, monitoring, or proxying services. For example, a web server container might be paired with a sidecar container that handles logging.
+
+Adapter Pattern: This pattern is used when you need to transform data or interface formats between two systems. For example, an adapter container might translate metrics from one format to another before sending them to a monitoring system.
+
+Ambassador Pattern: An ambassador container acts as a proxy between the main container and the rest of the network, handling network traffic and providing additional functionality like load balancing or rate limiting.
+
+kubectl -n elastic-stack exec -it app -- cat /log/app.log --> is used to execute a command inside a container running in a Kubernetes Pod. 
+
+
+example:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: yellow
+spec:
+  containers:
+  - name: lemon
+    image: busybox
+    command:
+      - sleep
+      - "1000"
+
+  - name: gold
+    image: redis
+
+ In above example we have used two containers this is what multi container pod is used.   
