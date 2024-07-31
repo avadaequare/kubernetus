@@ -1,0 +1,44 @@
+cluster maintanence:
+os upgrades:
+
+Upgrading the operating system (OS) of nodes in a Kubernetes cluster requires careful planning and execution to ensure minimal disruption. Here are the general steps you can follow:
+
+1. Preparation:
+Backup: Ensure all data and configurations are backed up.
+Documentation: Document the current state of the cluster, including the version of Kubernetes, OS versions, and configurations.
+Test: If possible, test the upgrade process in a staging environment before proceeding with production.
+2. Cordoning and Draining Nodes:
+Cordon the Node: This prevents new pods from being scheduled on the node.
+php
+Copy code
+kubectl cordon <node-name>
+Drain the Node: This safely evicts all running pods from the node.
+css
+Copy code
+kubectl drain <node-name> --ignore-daemonsets --delete-local-data
+Handle Pod Disruption Budgets (PDBs): Ensure that your applications can tolerate the downtime. If necessary, adjust PDBs temporarily.
+3. Upgrade the OS:
+SSH into the Node: Access the node via SSH.
+Upgrade the OS: Follow the OS-specific steps to upgrade the OS version. This might involve upgrading packages, applying patches, or even a full OS upgrade.
+Reboot the Node: If required, reboot the node after the upgrade.
+4. Rejoin the Node to the Cluster:
+Uncordon the Node: This allows new pods to be scheduled on the node.
+php
+Copy code
+kubectl uncordon <node-name>
+Verify Node Status: Ensure the node is in a Ready state and functioning correctly.
+Monitor the Node: Check logs, metrics, and application performance to ensure everything is working as expected.
+5. Repeat for All Nodes:
+Repeat the process for each node in the cluster, ensuring that there is always enough capacity to handle the workload.
+6. Post-Upgrade Checks:
+Verify Applications: Ensure that all applications are running as expected.
+Monitor the Cluster: Keep an eye on the cluster's performance and stability.
+Considerations:
+Node Pool Strategy: If using managed Kubernetes services like GKE, EKS, or AKS, consider using node pools to create a new pool with the desired OS version and migrate workloads over.
+Downtime and Redundancy: Plan for potential downtime, and ensure there is enough redundancy to handle workloads during the upgrade.
+
+kubectl drain node01 --ignore-daemonsets --> to take node01 out for maintenance. Empty the node of all applications and mark it unschedulable
+kubectl uncordon node01 -->  maintenance tasks have been completed. Configure the node node01 to be schedulable again.
+Running the uncordon command on a node will not automatically schedule pods on the node. When new pods are created, they will be placed on node01.
+A forceful drain of the node will delete any pod that is not part of a replicaset.
+kubectl cordon node01 --> use the kubectl cordon node01 command. This will ensure that no new pods are scheduled on this node and the existing pods will not be affected by this operation.
