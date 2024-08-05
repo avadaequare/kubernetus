@@ -12,6 +12,7 @@ password123,user2,u0002
 password123,user3,u0003
 password123,user4,u0004
 password123,user5,u0005
+
 Edit the kube-apiserver static pod configured by kubeadm to pass in the user details. The file is located at /etc/kubernetes/manifests/kube-apiserver.yaml
 
 apiVersion: v1
@@ -35,6 +36,7 @@ spec:
       path: /tmp/users
       type: DirectoryOrCreate
     name: usr-details
+
 Modify the kube-apiserver startup options to include the basic-auth file
 
 apiVersion: v1
@@ -50,6 +52,7 @@ spec:
     - --authorization-mode=Node,RBAC
       <content-hidden>
     - --basic-auth-file=/tmp/users/user-details.csv
+
 Create the necessary roles and role bindings for these users:
 
 ---
@@ -78,6 +81,7 @@ roleRef:
   kind: Role #this must be Role or ClusterRole
   name: pod-reader # this must match the name of the Role or ClusterRole you wish to bind to
   apiGroup: rbac.authorization.k8s.io
+
 Once created, you may authenticate into the kube-api server using the users credentials
 
 curl -v -k https://localhost:6443/api/v1/pods -u "user1:password123"
